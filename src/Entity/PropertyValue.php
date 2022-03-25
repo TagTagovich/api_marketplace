@@ -17,7 +17,7 @@ use Doctrine\Common\Collections\Collection;
  *     normalizationContext={"groups"={"catalog:read"}},
  *     denormalizationContext={"groups"={"catalog:write"}})
  */
-class ProductValue
+class PropertyValue
 {
     /**
      * @ORM\Id
