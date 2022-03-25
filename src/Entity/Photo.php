@@ -6,18 +6,15 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiProperty;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-
 /**
+ * @ORM\Entity()
  * @ApiResource(
  *     normalizationContext={"groups"={"catalog:read"}},
  *     denormalizationContext={"groups"={"catalog:write"}})
- * @ORM\Entity()
  */
-class Category
+class Photo
 {
     /**
      * @ORM\Id
@@ -30,29 +27,24 @@ class Category
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"catalog:write", "catalog:read"})
-     * 
      */
     private $name;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="string", length=255)
      * @Groups({"catalog:write", "catalog:read"})
      */
-    private $description;
+    private $file;
 
     /**
      * @ORM\Column(type="boolean")
      * @Groups({"catalog:write", "catalog:read"})
      */
-    private $isActive;
-    
-    private $products;
+    private $isMain;
 
-    private $parent;
+    private $product;
 
-    private $children;
-
-    public function getId(): ?uuid
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -69,26 +61,26 @@ class Category
         return $this;
     }
 
-    public function getDescription(): ?string
+    public function getFile(): ?string
     {
-        return $this->description;
+        return $this->file;
     }
 
-    public function setDescription(string $description): self
+    public function setFile(string $file): self
     {
-        $this->description = $description;
+        $this->file = $file;
 
         return $this;
     }
 
-    public function getIsActive(): ?bool
+    public function getIsMain(): ?bool
     {
-        return $this->isActive;
+        return $this->isMain;
     }
 
-    public function setIsActive(bool $isActive): self
+    public function setIsMain(bool $isMain): self
     {
-        $this->isActive = $isActive;
+        $this->isMain = $isMain;
 
         return $this;
     }

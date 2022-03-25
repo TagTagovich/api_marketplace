@@ -4,20 +4,20 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiProperty;
-use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
+ * @ORM\Entity()
  * @ApiResource(
  *     normalizationContext={"groups"={"catalog:read"}},
  *     denormalizationContext={"groups"={"catalog:write"}})
- * @ORM\Entity()
  */
-class Category
+class Product
 {
     /**
      * @ORM\Id
@@ -30,9 +30,20 @@ class Category
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"catalog:write", "catalog:read"})
-     * 
      */
     private $name;
+    
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"catalog:write", "catalog:read"})
+     */
+    private $sku;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable="true")
+     * @Groups({"catalog:read"})
+     */
+    private $foreignId;
 
     /**
      * @ORM\Column(type="text")
@@ -45,14 +56,20 @@ class Category
      * @Groups({"catalog:write", "catalog:read"})
      */
     private $isActive;
-    
-    private $products;
 
-    private $parent;
+    /**
+     * @ORM\Column(type="boolean")
+     * @Groups({"catalog:write", "catalog:read"})
+     */
+    private $markable;
 
-    private $children;
+    private $category;
 
-    public function getId(): ?uuid
+    private $photos;
+
+    private $propertyValues;
+
+    public function getId()
     {
         return $this->id;
     }
@@ -65,6 +82,30 @@ class Category
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getSku(): ?string
+    {
+        return $this->sku;
+    }
+
+    public function setSku(string $sku): self
+    {
+        $this->sku = $sku;
+
+        return $this;
+    }
+
+    public function getForeignId(): ?string
+    {
+        return $this->foreignId;
+    }
+
+    public function setForeignId(string $foreignId): self
+    {
+        $this->foreignId = $foreignId;
 
         return $this;
     }
@@ -92,4 +133,17 @@ class Category
 
         return $this;
     }
+
+    public function getMarkable(): ?bool
+    {
+        return $this->markable;
+    }
+
+    public function setMarkable(bool $markable): self
+    {
+        $this->markable = $markable;
+
+        return $this;
+    } 
+
 }

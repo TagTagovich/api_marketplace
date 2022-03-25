@@ -4,20 +4,18 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiProperty;
-use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-
 /**
+ * @ORM\Entity()
  * @ApiResource(
  *     normalizationContext={"groups"={"catalog:read"}},
  *     denormalizationContext={"groups"={"catalog:write"}})
- * @ORM\Entity()
  */
-class Category
+class Property
 {
     /**
      * @ORM\Id
@@ -30,29 +28,22 @@ class Category
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"catalog:write", "catalog:read"})
-     * 
      */
     private $name;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="string", length=255)
      * @Groups({"catalog:write", "catalog:read"})
      */
-    private $description;
+    private $code;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="string", length=255)
      * @Groups({"catalog:write", "catalog:read"})
      */
-    private $isActive;
-    
-    private $products;
+    private $type;
 
-    private $parent;
-
-    private $children;
-
-    public function getId(): ?uuid
+    public function getId()
     {
         return $this->id;
     }
@@ -69,27 +60,28 @@ class Category
         return $this;
     }
 
-    public function getDescription(): ?string
+    public function getCode(): ?string
     {
-        return $this->description;
+        return $this->code;
     }
 
-    public function setDescription(string $description): self
+    public function setCode(string $code): self
     {
-        $this->description = $description;
+        $this->code = $code;
 
         return $this;
     }
 
-    public function getIsActive(): ?bool
+    public function getType(): ?string
     {
-        return $this->isActive;
+        return $this->type;
     }
 
-    public function setIsActive(bool $isActive): self
+    public function setType(string $type): self
     {
-        $this->isActive = $isActive;
+        $this->type = $type;
 
         return $this;
     }
+
 }
