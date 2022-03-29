@@ -10,9 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity()
- * @ApiResource(
- *     normalizationContext={"groups"={"catalog:read"}},
- *     denormalizationContext={"groups"={"catalog:write"}})
+ * @ApiResource()
  */
 class Photo
 {
@@ -42,6 +40,9 @@ class Photo
      */
     private $isMain;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Product", inversedBy="photos")
+     */
     private $product;
 
     public function getId(): ?int
@@ -81,6 +82,18 @@ class Photo
     public function setIsMain(bool $isMain): self
     {
         $this->isMain = $isMain;
+
+        return $this;
+    }
+
+    public function getProduct(): ?Product
+    {
+        return $this->product;
+    }
+
+    public function setProduct(?Product $product): self
+    {
+        $this->product = $product;
 
         return $this;
     }

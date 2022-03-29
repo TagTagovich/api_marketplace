@@ -13,9 +13,7 @@ use Doctrine\Common\Collections\Collection;
 
 /**
  * @ORM\Entity()
- * @ApiResource(
- *     normalizationContext={"groups"={"catalog:read"}},
- *     denormalizationContext={"groups"={"catalog:write"}})
+ * @ApiResource()
  */
 class PropertyValue
 {
@@ -33,8 +31,14 @@ class PropertyValue
      */
     private $value;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Product", inversedBy="propertyValues")
+     */
     private $product;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Property", inversedBy="propertyValues")
+     */
     private $property;
 
     public function getId(): ?int
@@ -50,6 +54,30 @@ class PropertyValue
     public function setValue(string $value): self
     {
         $this->value = $value;
+
+        return $this;
+    }
+
+    public function getProduct(): ?Product
+    {
+        return $this->product;
+    }
+
+    public function setProduct(?Product $product): self
+    {
+        $this->product = $product;
+
+        return $this;
+    }
+
+    public function getProperty(): ?Property
+    {
+        return $this->property;
+    }
+
+    public function setProperty(?Property $property): self
+    {
+        $this->property = $property;
 
         return $this;
     }

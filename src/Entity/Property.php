@@ -11,9 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity()
- * @ApiResource(
- *     normalizationContext={"groups"={"catalog:read"}},
- *     denormalizationContext={"groups"={"catalog:write"}})
+ * @ApiResource()
  */
 class Property
 {
@@ -42,6 +40,11 @@ class Property
      * @Groups({"catalog:write", "catalog:read"})
      */
     private $type;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\PropertyValue", mappedBy="property")
+     */
+    private $propertyValues;
 
     public function getId()
     {
@@ -81,6 +84,35 @@ class Property
     {
         $this->type = $type;
 
+        return $this;
+    }
+
+    /**
+     * @return Collection|PropertyValues[]
+     */
+    public function getPropertyValues(): Collection
+    {
+        return $this->propertyValues;
+    }
+    
+    public function addPropertyValue(PropertyValue $propertyValue): self
+    {
+        if (!$this->propertyValues->contains($propertyValues)) {
+            $this->propertyValues[] = $propertyValue;
+            $propertyValue->setProperty($this);
+        }
+        return $this;
+    }
+    
+    public function removePropertyValue(PropertyValue $propertyValue): self
+    {
+        if ($this->propertyValues->contains($propertyValues)) {
+            $this->propertyValues->removeElement($propertyValue);
+            // set the owning side to null (unless already changed)
+            if ($propertyValue->getProperty() === $this) {
+                $propertyValue->setProperty(null);
+            }
+        }
         return $this;
     }
 

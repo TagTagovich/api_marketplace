@@ -10,9 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity()
- * @ApiResource(
- *     normalizationContext={"groups"={"catalog:read"}},
- *     denormalizationContext={"groups"={"catalog:write"}})
+ * @ApiResource()
  */
 class SaleStatus
 {
@@ -30,7 +28,15 @@ class SaleStatus
      */
     private $isSale;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Product", inversedBy="saleStatuses")
+     */
     private $product;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Channel", inversedBy="saleStatuses")
+     */
+    private $channel;
 
     public function getId(): ?int
     {
@@ -45,6 +51,30 @@ class SaleStatus
     public function setIsSale(bool $isSale): self
     {
         $this->isSale = $isSale;
+
+        return $this;
+    }
+
+    public function getChannel(): ?Channel
+    {
+        return $this->channel;
+    }
+
+    public function setChannel(?Channel $channel): self
+    {
+        $this->channel = $channel;
+
+        return $this;
+    }
+
+    public function getProduct(): ?Product
+    {
+        return $this->product;
+    }
+
+    public function setProduct(?Product $product): self
+    {
+        $this->product = $product;
 
         return $this;
     }
