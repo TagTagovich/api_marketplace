@@ -11,7 +11,15 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity()
- * @ApiResource()
+ * @ApiResource(
+ *     collectionOperations={"get", "post"},
+ *     itemOperations={
+ *          "get",
+ *          "put"={"normalization_context"={"groups"={"put"}}},
+ *          "delete",
+ *     },
+ *     normalizationContext={"groups"={"property:read"}},
+ *     denormalizationContext={"groups"={"property:write"}})
  */
 class Property
 {
@@ -25,26 +33,21 @@ class Property
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"catalog:write", "catalog:read"})
+     * @Groups({"property:write", "property:read", "put"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"catalog:write", "catalog:read"})
+     * @Groups({"property:write", "property:read", "put"})
      */
     private $code;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"catalog:write", "catalog:read"})
+     * @Groups({"property:write", "property:read", "put"})
      */
     private $type;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\PropertyValue", mappedBy="property")
-     */
-    private $propertyValues;
 
     public function getId()
     {
@@ -84,35 +87,6 @@ class Property
     {
         $this->type = $type;
 
-        return $this;
-    }
-
-    /**
-     * @return Collection|PropertyValues[]
-     */
-    public function getPropertyValues(): Collection
-    {
-        return $this->propertyValues;
-    }
-    
-    public function addPropertyValue(PropertyValue $propertyValue): self
-    {
-        if (!$this->propertyValues->contains($propertyValues)) {
-            $this->propertyValues[] = $propertyValue;
-            $propertyValue->setProperty($this);
-        }
-        return $this;
-    }
-    
-    public function removePropertyValue(PropertyValue $propertyValue): self
-    {
-        if ($this->propertyValues->contains($propertyValues)) {
-            $this->propertyValues->removeElement($propertyValue);
-            // set the owning side to null (unless already changed)
-            if ($propertyValue->getProperty() === $this) {
-                $propertyValue->setProperty(null);
-            }
-        }
         return $this;
     }
 

@@ -14,6 +14,19 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 /**
  * @ORM\Entity()
  * @ApiResource(
+ *     collectionOperations={"get", "post"},
+ *     itemOperations={
+ *          "get"={},
+ *          "put",
+ *          "patch"={
+ *             "input_formats"={
+ *                 "jsonld"={
+ *                     "application/merge-patch+json",
+ *                 },
+ *             },
+ *           }
+ *     },
+ * 
  *     normalizationContext={"groups"={"product:read"}},
  *     denormalizationContext={"groups"={"product:write"}})
  * 
@@ -66,7 +79,7 @@ class Product
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="products")
-     * @Groups({"product:write", "product:read"})
+     * 
      */
     private $category;
 
@@ -77,18 +90,19 @@ class Product
     private $photos;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\PropertyValue", mappedBy="product")
-     * 
+     * @ORM\OneToMany(targetEntity="App\Entity\PropertyValue", mappedBy="product", cascade={"persist"})
+     * @Groups({"product:write", "product:read"})
      */
     private $propertyValues;
+    
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Price", mappedBy="price")
+     * @ORM\OneToMany(targetEntity="App\Entity\Price", mappedBy="product", cascade={"persist"})
      * 
      */
     private $prices;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\SaleStatus", mappedBy="product")
+     * @ORM\OneToMany(targetEntity="App\Entity\SaleStatus", mappedBy="product", cascade={"persist"})
      * 
      */
     private $saleStatuses;
@@ -197,7 +211,7 @@ class Product
     }
     public function addPhoto(Photo $photo): self
     {
-        if (!$this->photos->contains($photos)) {
+        if (!$this->photos->contains($photo)) {
             $this->photos[] = $photo;
             $photo->setProduct($this);
         }
@@ -205,7 +219,7 @@ class Product
     }
     public function removePhoto(Photo $photo): self
     {
-        if ($this->photos->contains($photos)) {
+        if ($this->photos->contains($photo)) {
             $this->photos->removeElement($photo);
             // set the owning side to null (unless already changed)
             if ($photo->getProduct() === $this) {
@@ -225,7 +239,7 @@ class Product
     
     public function addPropertyValue(PropertyValue $propertyValue): self
     {
-        if (!$this->propertyValues->contains($propertyValues)) {
+        if (!$this->propertyValues->contains($propertyValue)) {
             $this->propertyValues[] = $propertyValue;
             $propertyValue->setProduct($this);
         }
@@ -234,7 +248,7 @@ class Product
     
     public function removePropertyValue(PropertyValue $propertyValue): self
     {
-        if ($this->propertyValues->contains($propertyValues)) {
+        if ($this->propertyValues->contains($propertyValue)) {
             $this->propertyValues->removeElement($propertyValue);
             // set the owning side to null (unless already changed)
             if ($propertyValue->getProduct() === $this) {
@@ -253,7 +267,7 @@ class Product
     }
     public function addPrice(Price $price): self
     {
-        if (!$this->prices->contains($prices)) {
+        if (!$this->prices->contains($price)) {
             $this->prices[] = $price;
             $price->setProduct($this);
         }
@@ -261,7 +275,7 @@ class Product
     }
     public function removePrice(Price $price): self
     {
-        if ($this->prices->contains($prices)) {
+        if ($this->prices->contains($price)) {
             $this->prices->removeElement($price);
             // set the owning side to null (unless already changed)
             if ($price->getProduct() === $this) {
@@ -280,7 +294,7 @@ class Product
     }
     public function addSaleStatus(SaleStatus $saleStatus): self
     {
-        if (!$this->saleStatuses->contains($saleStatuses)) {
+        if (!$this->saleStatuses->contains($saleStatus)) {
             $this->saleStatuses[] = $saleStatus;
             $saleStatus->setChannel($this);
         }
@@ -288,7 +302,7 @@ class Product
     }
     public function removeSaleStatus(SaleStatus $saleStatus): self
     {
-        if ($this->saleStatuses->contains($saleStatuses)) {
+        if ($this->saleStatuses->contains($saleStatus)) {
             $this->saleStatuses->removeElement($saleStatus);
             // set the owning side to null (unless already changed)
             if ($saleStatus->getChannel() === $this) {

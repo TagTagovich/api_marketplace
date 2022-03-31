@@ -17,6 +17,11 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ApiResource(
+ *     collectionOperations={"get", "post"},
+ *     itemOperations={
+ *          "get"={},
+ *          "put"
+ *     },
  *     normalizationContext={"groups"={"category:read"}},
  *     denormalizationContext={"groups"={"category:write"}})
  * @ORM\Entity()
@@ -75,7 +80,7 @@ class Category
         $this->children = new ArrayCollection();
     }
 
-    public function getId(): ?uuid
+    public function getId()
     {
         return $this->id;
     }

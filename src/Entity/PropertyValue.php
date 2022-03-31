@@ -13,7 +13,21 @@ use Doctrine\Common\Collections\Collection;
 
 /**
  * @ORM\Entity()
- * @ApiResource()
+ * @ApiResource(
+ *     collectionOperations={"get", "post"},
+ *     itemOperations={
+ *          "get"={},
+ *          "put",
+ *          "patch"={
+ *             "input_formats"={
+ *                 "jsonld"={
+ *                     "application/merge-patch+json",
+ *                 },
+ *             },
+ *          }
+ *     },
+ *     normalizationContext={"groups"={"propertyValue:read"}},
+ *     denormalizationContext={"groups"={"propertyValue:write"}})
  */
 class PropertyValue
 {
@@ -27,21 +41,25 @@ class PropertyValue
 
     /**
      * @ORM\Column(type="text")
-     * @Groups({"catalog:write", "catalog:read"})
+     * @Groups({"propertyValue:write", "propertyValue:read", "product:write", "product:read"})
+     * 
      */
     private $value;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Product", inversedBy="propertyValues")
+     * @Groups({"propertyValue:read"})
      */
     private $product;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Property", inversedBy="propertyValues")
+     * @Groups({"propertyValue:write", "propertyValue:read", "product:write"})
+     * 
      */
     private $property;
 
-    public function getId(): ?int
+    public function getId()
     {
         return $this->id;
     }

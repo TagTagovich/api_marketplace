@@ -50,7 +50,7 @@ class Channel
         $this->saleStatuses = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    public function getId()
     {
         return $this->id;
     }
@@ -88,7 +88,7 @@ class Channel
     }
     public function addPrice(Price $price): self
     {
-        if (!$this->prices->contains($prices)) {
+        if (!$this->prices->contains($price)) {
             $this->prices[] = $price;
             $price->setProduct($this);
         }
@@ -96,7 +96,7 @@ class Channel
     }
     public function removePrice(Price $price): self
     {
-        if ($this->prices->contains($prices)) {
+        if ($this->prices->contains($price)) {
             $this->prices->removeElement($price);
             // set the owning side to null (unless already changed)
             if ($price->getProduct() === $this) {
