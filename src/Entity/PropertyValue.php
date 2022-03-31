@@ -40,13 +40,6 @@ class PropertyValue
     private $id;
 
     /**
-     * @ORM\Column(type="text")
-     * @Groups({"propertyValue:write", "propertyValue:read", "product:write", "product:read"})
-     * 
-     */
-    private $value;
-
-    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Product", inversedBy="propertyValues")
      * @Groups({"propertyValue:read"})
      */
@@ -58,6 +51,13 @@ class PropertyValue
      * 
      */
     private $property;
+
+    /**
+     * @ORM\Column(type="text")
+     * @Groups({"propertyValue:write", "propertyValue:read", "product:write", "product:read"})
+     * 
+     */
+    private $value;
 
     public function getId()
     {

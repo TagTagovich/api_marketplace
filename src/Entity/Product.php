@@ -79,7 +79,7 @@ class Product
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="products")
-     * 
+     * @Groups({"product:write", "product:read"})
      */
     private $category;
 
