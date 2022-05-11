@@ -7,10 +7,26 @@ use ApiPlatform\Core\Annotation\ApiProperty;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 /**
  * @ORM\Entity()
- * @ApiResource()
+ * @ApiResource(
+ *     collectionOperations={"get", "post"={"denormalization_context"={"groups"={"channel:collection:post"}}}},
+ *     itemOperations={
+ *          "get"={},
+ *          "put"={"denormalization_context"={"groups"={"channel:item:put"}}},
+ *          "patch"={
+ *             "input_formats"={
+ *                 "jsonld"={
+ *                     "application/merge-patch+json",
+ *                 },
+ *             },
+ *          }
+ *     },
+ *     normalizationContext={"groups"={"channel:read"}},
+ *     denormalizationContext={"groups"={"channel:write"}})
  */
 class Channel
 {
@@ -24,23 +40,25 @@ class Channel
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"catalog:write", "catalog:read"})
+     * @Groups({"channel:item:put", "channel:collection:post"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"catalog:write", "catalog:read"})
+     * @Groups({"channel:item:put", "channel:collection:post"})
      */
     private $type;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Price", mappedBy="channel")
+     * @Groups({"channel:item:put"})
      */
     private $prices;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\SaleStatus", mappedBy="channel")
+     * @Groups({"channel:item:put"})
      */
     private $saleStatuses;
 

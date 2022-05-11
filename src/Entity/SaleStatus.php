@@ -7,10 +7,28 @@ use ApiPlatform\Core\Annotation\ApiProperty;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 /**
  * @ORM\Entity()
- * @ApiResource()
+ * @ApiResource(
+ *     collectionOperations={"get", "post"},
+ *     itemOperations={
+ *          "get"={},
+ *          "put",
+ *          "patch"={
+ *             "input_formats"={
+ *                 "jsonld"={
+ *                     "application/merge-patch+json",
+ *                 },
+ *             },
+ *           }
+ *     },
+ * 
+ *     normalizationContext={"groups"={"product:read"}},
+ *     denormalizationContext={"groups"={"product:write"}})
+ * 
  */
 class SaleStatus
 {
@@ -23,20 +41,22 @@ class SaleStatus
     private $id;
 
     /**
-     * @ORM\Column(type="boolean")
-     * @Groups({"catalog:write", "catalog:read"})
-     */
-    private $isSale;
-
-    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Product", inversedBy="saleStatuses")
      */
     private $product;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Channel", inversedBy="saleStatuses")
+     * @Groups({"saleStatus:write", "saleStatus:read", "product:write"})
      */
     private $channel;
+
+    /**
+     * @ORM\Column(type="boolean")
+     * @Groups({"saleStatus:write", "saleStatus:read", "product:write"})
+     */
+    private $isSale;
+
 
     public function getId()
     {

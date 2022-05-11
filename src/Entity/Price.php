@@ -7,10 +7,26 @@ use ApiPlatform\Core\Annotation\ApiProperty;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 /**
  * @ORM\Entity()
- * @ApiResource()
+ * @ApiResource(
+ *     collectionOperations={"get", "post"},
+ *     itemOperations={
+ *          "get"={},
+ *          "put",
+ *          "patch"={
+ *             "input_formats"={
+ *                 "jsonld"={
+ *                     "application/merge-patch+json",
+ *                 },
+ *             },
+ *          }
+ *     },
+ *     normalizationContext={"groups"={"price:read"}},
+ *     denormalizationContext={"groups"={"price:write"}})
  */
 class Price
 {
@@ -24,20 +40,21 @@ class Price
 
     /**
      * @ORM\Column(type="decimal", precision=10, scale=0)
-     * @Groups({"catalog:write", "catalog:read"})
-     */
-    private $price;
-
-    /**
-     * @ORM\Column(type="decimal", precision=10, scale=0)
-     * @Groups({"catalog:write", "catalog:read"})
+     * @Groups({"price:write", "price:read"})
      */
     private $oldPrice;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Channel", inversedBy="prices")
+     * @Groups({"price:write", "price:read", "product:write"})
      */
     private $channel;
+
+    /**
+     * @ORM\Column(type="decimal", precision=10, scale=0)
+     * @Groups({"price:write", "price:read", "product:write"})
+     */
+    private $price;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Product", inversedBy="prices")

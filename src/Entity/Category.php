@@ -12,15 +12,22 @@ use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+//use App\Controller\CategoriesThree as CThree;
 
 
 
 /**
  * @ApiResource(
- *     collectionOperations={"get", "post"},
+ *     collectionOperations={
+ *          "get",
+ *          "post",
+ *          "get_three"={"method"="GET", "path"="/categories/three",
+ *              "normalization_context"={"groups"="category:collection:get"}}    
+ *     },
  *     itemOperations={
  *          "get"={},
- *          "put"
+ *          "put",
+ *
  *     },
  *     normalizationContext={"groups"={"category:read"}},
  *     denormalizationContext={"groups"={"category:write"}})
@@ -38,7 +45,7 @@ class Category
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"category:write", "category:read"})
+     * @Groups({"category:write", "category:read", "category:collection:get"})
      * 
      */
     private $name;
@@ -70,7 +77,7 @@ class Category
     
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Category", mappedBy="parent")
-     * @Groups({"category:read"})
+     * @Groups({"category:read", "category:collection:get"})
      */
     private $children;
 

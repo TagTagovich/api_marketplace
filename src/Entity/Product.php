@@ -97,13 +97,13 @@ class Product
     
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Price", mappedBy="product", cascade={"persist"})
-     * 
+     * @Groups({"product:write", "product:read"})
      */
     private $prices;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\SaleStatus", mappedBy="product", cascade={"persist"})
-     * 
+     * @Groups({"product:write", "product:read"})
      */
     private $saleStatuses;
 
